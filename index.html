@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Song Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #eaeaea;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Song Maker</h1>
+        <p>Input your lyrics or description to generate a song:</p>
+        <textarea id="lyricsInput" placeholder="Type your lyrics here..."></textarea><br>
+        <button onclick="generateSong()">Generate Song</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function generateSong() {
+            const lyrics = document.getElementById('lyricsInput').value;
+            const result = document.getElementById('result');
+            result.textContent = 'Generating your song... Please wait.';
+            
+            try {
+                const response = await fetch('https://suno-api.com/song', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lyrics: lyrics })
+                });
+                
+                const data = await response.json();
+                result.textContent = `Here’s your song: ${data.song}`;
+            } catch (error) {
+                result.textContent = 'Oops! Something went wrong. Please try again later.';
+            }
+        }
+    </script>
+</body>
+</html>
