@@ -45,7 +45,7 @@
 <body>
     <div class="container">
         <h1>AI Song Maker</h1>
-        <p>Input your lyrics or description to generate a song:</p>
+        <p>Input your lyrics or leave it blank for the AI to generate lyrics:</p>
         <textarea id="lyricsInput" placeholder="Type your lyrics here..."></textarea><br>
         <button onclick="generateSong()">Generate Song</button>
         <p id="result"></p>
@@ -53,21 +53,29 @@
 
     <script>
         async function generateSong() {
-            const lyrics = document.getElementById('lyricsInput').value;
+            const lyricsInput = document.getElementById('lyricsInput').value.trim();
             const result = document.getElementById('result');
             result.textContent = 'Generating your song... Please wait.';
-            
+
+            // If no lyrics are provided, generate lyrics automatically
+            const lyrics = lyricsInput || "Let's create some amazing AI-generated lyrics about life, love, and dreams.";
+
             try {
+                // Replace the placeholder URL with the real API endpoint
                 const response = await fetch('https://suno-api.com/song', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ lyrics: lyrics })
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch song. Please check the API.');
+                }
+
                 const data = await response.json();
-                result.textContent = `Here’s your song: ${data.song}`;
+                result.textContent = `Here’s your song: ${data.song || 'Error: Unable to retrieve song.'}`;
             } catch (error) {
-                result.textContent = 'Oops! Something went wrong. Please try again later.';
+                result.textContent = `Oops! Something went wrong: ${error.message}`;
             }
         }
     </script>
